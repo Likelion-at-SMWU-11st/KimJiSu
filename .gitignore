@@ -10,4 +10,8 @@ WEEK07/myvenv/Lib/site-packages/tzdata/zoneinfo/US/
 WEEK07/myvenv/Lib/site-packages/tzdata/zoneinfo/
 
 WEEK07/myvenv/Lib/
+Week01_DB, ORM/myvenv/Lib/
+Week01_DB, ORM/Scripts/
 *.cfg
+
+Week01_DB, ORM/myvenv/Scripts/
