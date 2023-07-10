@@ -1,6 +1,15 @@
 from django.shortcuts import render
-
 from django.http import HttpResponse, JsonResponse
+
+from django.views.generic import ListView
+from .models import Post
+
+
+class class_view(ListView):
+    model = Post
+    ordering = ['-id']
+    template_name = 'cbv_view.html'
+
 
 # Create your views here.
 def url_view(request):
@@ -15,6 +24,9 @@ def url_parameter_view(request, username):
 
 def function_view(request):
     print(f'request.method: {request.method}')
-    print(f'request.GET: {request.GET}')
-    print(f'request.POST: {request.POST}')
+
+    if request.method == "GET":
+        print(f'request.GET: {request.GET}')
+    elif request.method == 'POST':
+        print(f'request.POST: {request.POST}')
     return render(request, 'view.html')
