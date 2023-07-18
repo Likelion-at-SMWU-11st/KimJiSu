@@ -6,3 +6,7 @@ myvenv/Lib/
 Scripts/
 *.cfg
 
+
+*.svg
+
+week04_CRUD/posts/migrations/
