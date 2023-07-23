@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, JsonResponse, Http404
 
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -37,6 +37,8 @@ def post_create_view(request):
     else:
         image=request.FILES.get('image')
         content=request.POST.get('content')
+        print(image)
+        print(content)
         Post.objects.create( #image, content 데이터를 담은 Post 객체 만들어서 저장
             image=image,
             content=content,
@@ -44,11 +46,42 @@ def post_create_view(request):
         )
         return redirect('index')
 
+@login_required
 def post_update_view(request, id):
-    return render(request, 'posts/post_update.html')
 
+    # post = Post.objects.get(id=id)
+    post = get_object_or_404(Post, id=id, writer= request.user)
+
+    if request.method == 'GET':
+        context = { 'post': post }
+        return render(request, 'posts/post_form.html', context)
+    elif request.method == 'POST':
+        new_image = request.FILES.get('image')
+        content=request.POST.get('content')
+        print(new_image)
+        print(content)
+
+        if new_image:
+            post.image.delete()
+            post.image = new_image
+
+        post.content = content
+        post.save
+        return render(request, 'posts/post_update.html', post.id)
+
+@login_required
 def post_delete_view(request, id):
-    return render(request, 'posts/post_confirm_delete.html')
+    post = get_object_or_404(Post, id=id)
+    #post = get_object_or_404(Post, id=id, writer=request.user)
+    if request.user != post.writer:
+        raise Http404('잘못된 접근입니다.')
+    if request.method == 'GET':
+        context = { 'post': post }
+        return render(request, 'posts/post_confirm_delete.html', context)
+    else:
+        post.delete()
+        return redirect('index')
+
 
 class class_view(ListView):
     model = Post
