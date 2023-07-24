@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 
-from .forms import PostBasedForm
+from .forms import PostBasedForm, PostCreateForm, PostUpdateForm, PostDetailForm
 from .models import Post
 
 def index(request):
@@ -29,6 +29,7 @@ def post_detail_view(request, id):
     post = Post.objects.get(id=id)
     context = {
         'post': post,
+        'form': PostDetailForm(),
     }
     return render(request, 'posts/post_detail.html', context)
 
@@ -50,11 +51,11 @@ def post_create_view(request):
 
 def post_create_form_view(request):
     if request.method=="GET":
-        form = PostBasedForm()
+        form = PostCreateForm()
         context = {'form': form}
         return render(request, 'posts/post_form2.html', context)
     else:
-        form = PostBasedForm(request.POST,  request.FILES)
+        form = PostCreateForm(request.POST,  request.FILES)
 
         if form.is_valid():
             Post.objects.create( #image, content 데이터를 담은 Post 객체 만들어서 저장
